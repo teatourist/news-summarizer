@@ -7,7 +7,7 @@ function App() {
     const [articles, setArticles] = useState([])
     const [loading, setLoading] = useState(false)
     const [status, setStatus] = useState('Initializing...')
-    const [dateRange, setDateRange] = useState(7)
+    const [dateRange, setDateRange] = useState(3)
     const [summary, setSummary] = useState('')
 
     useEffect(() => {
@@ -232,7 +232,7 @@ function App() {
                     {articles.length === 0 && !loading && (
                         <div style={{ textAlign: 'center', padding: '60px', borderRadius: '16px', border: '2px dashed rgba(255,255,255,0.2)' }}>
                             <BookOpen size={64} opacity={0.3} style={{ marginBottom: '15px' }} />
-                            <p style={{ fontSize: '1.2rem', opacity: 0.6 }}>Your news feed is empty. Click Sync to ingest today's headlines.</p>
+                            <p style={{ fontSize: '1.2rem', opacity: 0.6 }}>Your news feed is empty. Click Sync to ingest the latest headlines.</p>
                         </div>
                     )}
                 </div>
