@@ -94,7 +94,7 @@ function App() {
             minHeight: '100vh',
             padding: '2rem',
             fontFamily: 'Inter, system-ui, sans-serif',
-            background: 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)',
+            background: 'linear-gradient(135deg, #0f766e 0%, #0369a1 100%)',
             color: 'white',
             display: 'flex',
             flexDirection: 'column',
