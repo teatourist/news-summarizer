@@ -5,7 +5,7 @@
 
     color-scheme: light dark;
     color: rgba(255, 255, 255, 0.87);
-    background-color: #0d9488;
+    background-color: #db2777;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -26,6 +26,6 @@ body {
 }
 
 ::selection {
-    background-color: #ccfbf1;
-    color: #0d9488;
+    background-color: #fbcfe8;
+    color: #db2777;
 }
