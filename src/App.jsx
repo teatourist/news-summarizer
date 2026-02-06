@@ -94,7 +94,7 @@ function App() {
             minHeight: '100vh',
             padding: '2rem',
             fontFamily: 'Inter, system-ui, sans-serif',
-            background: 'linear-gradient(135deg, #0f766e 0%, #0369a1 100%)',
+            background: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)',
             color: 'white',
             display: 'flex',
             flexDirection: 'column',
@@ -103,7 +103,7 @@ function App() {
         }}>
             <header style={{ textAlign: 'center', marginBottom: '3rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '1rem' }}>
-                    <Sparkles size={40} color="#5eead4" />
+                    <Sparkles size={40} color="#fbcfe8" />
                     <h1 style={{ fontSize: '3rem', margin: 0, fontWeight: '800', letterSpacing: '-0.05em' }}>News Summarizer</h1>
                 </div>
                 <p style={{ fontSize: '1.2rem', opacity: 0.9, maxWidth: '600px', margin: '0 auto' }}>
@@ -137,7 +137,7 @@ function App() {
                                 borderRadius: '8px',
                                 border: 'none',
                                 backgroundColor: 'white',
-                                color: '#0d9488',
+                                color: '#db2777',
                                 fontWeight: '600',
                                 cursor: 'pointer',
                                 outline: 'none'
@@ -159,7 +159,7 @@ function App() {
                             padding: '12px 24px',
                             borderRadius: '10px',
                             border: 'none',
-                            backgroundColor: '#14b8a6',
+                            backgroundColor: '#ec4899',
                             color: 'white',
                             fontWeight: '700',
                             cursor: loading ? 'not-allowed' : 'pointer',
@@ -181,15 +181,15 @@ function App() {
                 {summary && (
                     <div style={{
                         background: 'rgba(255, 255, 255, 0.95)',
-                        color: '#134e4a',
+                        color: '#9d174d',
                         padding: '24px',
                         borderRadius: '16px',
                         marginBottom: '2rem',
-                        borderLeft: '8px solid #14b8a6',
+                        borderLeft: '8px solid #f472b6',
                         boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
                         animation: 'slideIn 0.5s ease-out'
                     }}>
-                        <h2 style={{ fontSize: '1.25rem', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '10px', color: '#0d9488' }}>
+                        <h2 style={{ fontSize: '1.25rem', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '10px', color: '#db2777' }}>
                             <TrendingUp size={22} /> News Digest
                         </h2>
                         <p style={{ lineHeight: '1.7', fontSize: '1.1rem', margin: 0, fontWeight: '400', whiteSpace: 'pre-wrap' }}>
