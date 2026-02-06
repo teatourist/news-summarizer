@@ -16,38 +16,14 @@ export default async function handler(req, res) {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     try {
-        let allArticles = [];
+        const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=${newsApiKey}`);
+        const data = await response.json();
 
-        // 1. Try Top Headlines (General)
-        const topResp = await fetch(`https://newsapi.org/v2/top-headlines?country=us&pageSize=50&apiKey=${newsApiKey}`);
-        const topData = await topResp.json();
-        if (topData.status === 'ok') {
-            allArticles.push(...topData.articles);
+        if (data.status !== 'ok') {
+            throw new Error(data.message || 'NewsAPI error');
         }
 
-        // 2. Try Top Headlines (Technology) to increase variety
-        const techResp = await fetch(`https://newsapi.org/v2/top-headlines?country=us&category=technology&apiKey=${newsApiKey}`);
-        const techData = await techResp.json();
-        if (techData.status === 'ok') {
-            allArticles.push(...techData.articles);
-        }
-
-        // 3. Fallback: If we still have very few articles or nothing from "today", try the Everything endpoint
-        const today = new Date().toISOString().split('T')[0];
-        const hasToday = allArticles.some(a => a.publishedAt && a.publishedAt.startsWith(today));
-
-        if (allArticles.length < 10 || !hasToday) {
-            console.log('Falling back to "everything" endpoint for more results...');
-            const everythingResp = await fetch(`https://newsapi.org/v2/everything?q=news&sortBy=publishedAt&pageSize=50&apiKey=${newsApiKey}`);
-            const everythingData = await everythingResp.json();
-            if (everythingData.status === 'ok') {
-                allArticles.push(...everythingData.articles);
-            }
-        }
-
-        if (allArticles.length === 0) {
-            throw new Error('No articles found from any endpoint');
-        }
+        const allArticles = data.articles;
 
         const formattedArticles = allArticles.map(a => ({
             title: a.title,
