@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY
+const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY // Use service role for backend ingest
 const newsApiKey = process.env.NEWS_API_KEY
 
 const supabase = createClient(supabaseUrl, supabaseKey)

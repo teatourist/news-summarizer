@@ -11,6 +11,12 @@ function App() {
     const [summary, setSummary] = useState('')
 
     useEffect(() => {
+        // Initial automated sync on startup
+        handleIngest()
+    }, [])
+
+    useEffect(() => {
+        // Refresh view when date range changes
         fetchArticles()
     }, [dateRange])
 
@@ -19,6 +25,7 @@ function App() {
         setStatus('Looking for headlines...')
         try {
             const sinceDate = subDays(new Date(), dateRange).toISOString()
+
             const { data, error } = await supabase
                 .from('articles')
                 .select('*')
@@ -30,10 +37,11 @@ function App() {
 
             if (data && data.length > 0) {
                 generateSummary(data)
-                setStatus(`Showing ${data.length} articles from the last ${dateRange} days.`)
+                const rangeText = dateRange === 1 ? 'the last 24 hours' : `the last ${dateRange} days`
+                setStatus(`Showing ${data.length} articles from ${rangeText}.`)
             } else {
                 setSummary('')
-                setStatus("No articles found in this range. Try 'Refresh & Ingest'.")
+                setStatus("No recent articles found. News outlets might be experiencing a delay.")
             }
         } catch (err) {
             console.error('Fetch error:', err)
@@ -45,23 +53,40 @@ function App() {
 
     async function handleIngest() {
         setLoading(true)
-        setStatus('Ingesting fresh news via Node.js service...')
-        // In a real app, this would trigger a serverless function. 
-        // Here we simulate the trigger.
-        setTimeout(async () => {
+        setStatus('Syncing with global news outlets...')
+        try {
+            const resp = await fetch('/api/ingest', { method: 'POST' })
+            const data = await resp.json()
+            if (data.error) throw new Error(data.error)
+
+            // After successful ingest, refresh the feed
             fetchArticles()
-        }, 2000)
+        } catch (err) {
+            console.error('Ingest error:', err)
+            setStatus(`Automated sync failed: ${err.message}. Using cached data.`)
+            fetchArticles() // Fallback to whatever is in Supabase
+        }
     }
 
-    function generateSummary(items) {
-        // Client-side aggregation/summarization logic
-        const sources = [...new Set(items.map(a => a.source))]
-        const count = items.length
-        const latest = items[0]
+    async function generateSummary(items) {
+        setStatus('Generating AI Digest with Gemini...')
+        try {
+            const response = await fetch('/api/summarize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ articles: items })
+            })
 
-        const text = `Overview of the last ${dateRange} days: We've gathered ${count} key developments across ${sources.length} major sources including ${sources.slice(0, 3).join(', ')}. The most recent update highlights "${latest.title}". Trends suggest a focus on ${items.slice(0, 5).map(a => a.title.split(' ')[0]).filter(w => w.length > 4).slice(0, 3).join(', ')}.`
+            const data = await response.json()
+            if (data.error) throw new Error(data.error)
 
-        setSummary(text)
+            setSummary(data.summary)
+        } catch (err) {
+            console.error('AI Summary error:', err)
+            // Fallback to basic logic if AI fails
+            const topStories = items.slice(0, 3).map(a => a.title).join('. ')
+            setSummary(`Briefing: ${topStories}. (AI generation unavailable at the moment)`)
+        }
     }
 
     return (
@@ -118,7 +143,6 @@ function App() {
                                 outline: 'none'
                             }}
                         >
-                            <option value={1}>Today</option>
                             <option value={3}>Last 3 Days</option>
                             <option value={7}>Last 7 Days</option>
                             <option value={30}>Last 30 Days</option>
@@ -166,10 +190,14 @@ function App() {
                         animation: 'slideIn 0.5s ease-out'
                     }}>
                         <h2 style={{ fontSize: '1.25rem', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '10px', color: '#0d9488' }}>
-                            <TrendingUp size={22} /> Executive Summary
+                            <TrendingUp size={22} /> News Digest
                         </h2>
-                        <p style={{ lineHeight: '1.7', fontSize: '1.1rem', margin: 0, fontWeight: '400' }}>
-                            {summary}
+                        <p style={{ lineHeight: '1.7', fontSize: '1.1rem', margin: 0, fontWeight: '400', whiteSpace: 'pre-wrap' }}>
+                            {summary.split(/(\*\*.*?\*\*)/).map((part, i) =>
+                                part.startsWith('**') && part.endsWith('**')
+                                    ? <strong key={i}>{part.slice(2, -2)}</strong>
+                                    : part
+                            )}
                         </p>
                     </div>
                 )}
